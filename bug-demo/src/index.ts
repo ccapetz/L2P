@@ -11,8 +11,19 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello World!');
-	},
-} satisfies ExportedHandler<Env>;
+// !mark(10:11)
+import * as Sentry from "@sentry/cloudflare";
+
+export default Sentry.withSentry(
+  (env) => ({
+    dsn: "https://[SENTRY_KEY]@[SENTRY_HOSTNAME].ingest.us.sentry.io/[SENTRY_PROJECT_ID]",
+    tracesSampleRate: 1.0,
+  }),
+  {
+    async fetch(request, env, ctx) {
+      // ❌ intentional bug
+      undefined.call();
+      return new Response("Hello World!");
+    },
+  } satisfies ExportedHandler<Env>,
+);
