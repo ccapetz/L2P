@@ -21,8 +21,7 @@ export default Sentry.withSentry(
   }),
   {
     async fetch(request, env, ctx) {
-      // ❌ intentional bug
-      undefined.call();
+      // ✅ Bug fixed: Removed undefined.call() that was causing TypeError
       return new Response("Hello World!");
     },
   } satisfies ExportedHandler<Env>,
