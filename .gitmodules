@@ -1,0 +1,3 @@
+[submodule "c-log-analysis"]
+	path = c-log-analysis
+	url = https://github.com/ajajoo/c-log-analysis
