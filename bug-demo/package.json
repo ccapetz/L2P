@@ -1,21 +1,25 @@
 {
-	"name": "bug-demo",
-	"version": "0.0.0",
-	"private": true,
-	"scripts": {
-		"deploy": "wrangler deploy",
-		"dev": "wrangler dev",
-		"start": "wrangler dev",
-		"test": "vitest",
-		"cf-typegen": "wrangler types"
-	},
-	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.8.19",
-		"typescript": "^5.5.2",
-		"vitest": "~3.2.0",
-		"wrangler": "^4.26.1"
-	},
-	"dependencies": {
-		"@sentry/cloudflare": "^9.23.0"
-	}
+  "name": "bug-demo",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy --outdir dist --upload-source-maps --var SENTRY_RELEASE:$(sentry-cli releases propose-version)",
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "test": "vitest",
+    "cf-typegen": "wrangler types",
+    "sentry:sourcemaps": "_SENTRY_RELEASE=$(sentry-cli releases propose-version) && sentry-cli releases new $_SENTRY_RELEASE --org=cisco-og --project=bug-demo && sentry-cli sourcemaps upload --org=cisco-og --project=bug-demo --release=$_SENTRY_RELEASE --strip-prefix 'dist/..' dist",
+    "postdeploy": "npm run sentry:sourcemaps"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.8.19",
+    "@sentry/cli": "^2.51.0",
+    "typescript": "^5.5.2",
+    "vitest": "~3.2.0",
+    "wrangler": "^4.26.1"
+  },
+  "dependencies": {
+    "@sentry/cloudflare": "^9.23.0",
+    "@sentry/node": "^10.2.0"
+  }
 }
